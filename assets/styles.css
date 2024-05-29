@@ -1,0 +1,34 @@
+body {
+    font-family: Arial, sans-serif;
+}
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+.form-group {
+    margin-bottom: 20px;
+}
+.form-group input {
+    padding: 10px;
+    width: calc(100% - 22px);
+}
+.weather-display {
+    margin-top: 20px;
+}
+.current-weather, .forecast {
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.forecast .day {
+    display: inline-block;
+    width: 18%;
+    text-align: center;
+    border: 1px solid #ccc;
+    margin-right: 1%;
+    padding: 10px;
+}
+.forecast .day:last-child {
+    margin-right: 0;
+}
