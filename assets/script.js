@@ -9,6 +9,7 @@ const currentWind = document.getElementById('current-wind');
 const cityInput = document.getElementById('city-input');
 const APIkey = `4a053c145f12f7d520fdf3cb5b6974dd`;
 
+//function to fetch data from api. 
 function getCityCoordinates() {
     let cityName = cityInput.value.trim();
     cityInput.value = '';
@@ -31,6 +32,7 @@ function getCityCoordinates() {
 
 searchButton.addEventListener('click', getCityCoordinates);
 
+//Adds searched cities to history list so they can easily be searched again. 
 function addCityToHistory(cityName) {
     const historyList = document.getElementById('history-list');
     const listItem = document.createElement('li');
@@ -38,6 +40,7 @@ function addCityToHistory(cityName) {
     historyList.appendChild(listItem);
 }
 
+//prints the information fetched from the api to the window. 
 function displayCurrentWeather(data) {
     currentCityDate.textContent = `${data.name}, ${new Date().toLocaleDateString()}`;
     document.getElementById('current-icon').src = `http://openweathermap.org/img/w/${data.weather[0].icon}.png`;
@@ -48,7 +51,7 @@ function displayCurrentWeather(data) {
 
 function displayForecast(lat, lon) {
     const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=${APIkey}`;
-    
+    //fetches more data based on latitude and longitude.
     fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
