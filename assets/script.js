@@ -5,11 +5,10 @@ const currentCityDate = document.getElementById('current-city-date');
 const currentTemp = document.getElementById('current-temp');
 const currentHumidity = document.getElementById('current-humidity');
 const currentWind = document.getElementById('current-wind');
-
 const cityInput = document.getElementById('city-input');
 const APIkey = `4a053c145f12f7d520fdf3cb5b6974dd`;
 
-//function to fetch data from api. 
+// Function to fetch data from API.
 function getCityCoordinates() {
     let cityName = cityInput.value.trim();
     cityInput.value = '';
@@ -23,7 +22,7 @@ function getCityCoordinates() {
             console.log(data);
             displayCurrentWeather(data);
             displayForecast(data.coord.lat, data.coord.lon);
-            addCityToHistory(cityName);
+            addCityToHistory(cityName, data);
         })
         .catch(() => {
             alert(`Failed to fetch coordinates of ${cityName}`);
@@ -32,15 +31,22 @@ function getCityCoordinates() {
 
 searchButton.addEventListener('click', getCityCoordinates);
 
-//Adds searched cities to history list so they can easily be searched again. 
-function addCityToHistory(cityName) {
+// Adds searched cities to history list so they can easily be searched again.
+function addCityToHistory(cityName, data) {
     const historyList = document.getElementById('history-list');
     const listItem = document.createElement('li');
     listItem.textContent = cityName;
+    listItem.addEventListener('click', () => {
+        displayCurrentWeather(data);
+        displayForecast(data.coord.lat, data.coord.lon);
+    });
     historyList.appendChild(listItem);
+
+    // Save city data to local storage
+    localStorage.setItem(cityName, JSON.stringify(data));
 }
 
-//prints the information fetched from the api to the window. 
+// Prints the information fetched from the API to the window.
 function displayCurrentWeather(data) {
     currentCityDate.textContent = `${data.name}, ${new Date().toLocaleDateString()}`;
     document.getElementById('current-icon').src = `http://openweathermap.org/img/w/${data.weather[0].icon}.png`;
@@ -51,7 +57,7 @@ function displayCurrentWeather(data) {
 
 function displayForecast(lat, lon) {
     const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=${APIkey}`;
-    //fetches more data based on latitude and longitude.
+    // Fetches more data based on latitude and longitude.
     fetch(apiUrl)
         .then(response => response.json())
         .then(data => {
@@ -79,3 +85,19 @@ function displayForecast(lat, lon) {
             alert('Failed to fetch forecast data');
         });
 }
+
+// Load history from local storage on page load
+window.addEventListener('load', () => {
+    const historyList = document.getElementById('history-list');
+    for (let i = 0; i < localStorage.length; i++) {
+        const cityName = localStorage.key(i);
+        const data = JSON.parse(localStorage.getItem(cityName));
+        const listItem = document.createElement('li');
+        listItem.textContent = cityName;
+        listItem.addEventListener('click', () => {
+            displayCurrentWeather(data);
+            displayForecast(data.coord.lat, data.coord.lon);
+        });
+        historyList.appendChild(listItem);
+    }
+});
